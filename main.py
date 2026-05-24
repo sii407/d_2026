@@ -2,42 +2,55 @@ import pyxel
 
 class Game:
   def __init__(self):
-    # 画面サイズを 160x120 ピクセルに設定（レトロサイズ）
-    pyxel.init(160, 120, title="4人のお悩み解決")
+    # 画面サイズ
+    pyxel.init(160, 120, title="主人公の実装")
 
-    # ゲームの状態管理
-    self.current_room = "ROOM 1"
-    self.has_item = False
+    # 1. さっき作ったドット絵ファイルを読み込む（超重要！）
+    pyxel.load("my_resource.pyxres")
 
-    # マウス（タップ）を使えるようにする
-    pyxel.mouse(True)
+    # 主人公の初期位置と速度
+    self.player_x = 76  # 画面中央付近
+    self.player_y = 56
+    self.player_speed = 2
 
-    # ゲームの実行（更新処理と描画処理を登録）
+    # ゲームの実行
     pyxel.run(self.update, self.draw)
 
   def update(self):
-    # もし画面が左クリック（またはタップ）されたら
-    if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
-      # クリックされた座標を取得
-      mx = pyxel.mouse_x
-      my = pyxel.mouse_y
+    # 2. 矢印キー（方向キー）の入力を判定して、座標を更新する
 
-      # 【例】画面の右側をタップしたら次の部屋へ
-      if mx > 120:
-        self.current_room = "ROOM 2"
-      # 【例】画面中央の特定の場所をタップしたらアイテム取得
-      elif 60 < mx < 100 and 50 < my < 80:
-        self.has_item = True
+    # 左 (Left)
+    if pyxel.btn(pyxel.KEY_LEFT):
+      self.player_x -= self.player_speed
+
+    # 右 (Right)
+    if pyxel.btn(pyxel.KEY_RIGHT):
+      self.player_x += self.player_speed
+
+    # 上 (Up)
+    if pyxel.btn(pyxel.KEY_UP):
+      self.player_y -= self.player_speed
+
+    # 下 (Down)
+    if pyxel.btn(pyxel.KEY_DOWN):
+      self.player_y += self.player_speed
+
+    # 画面外に出ないようにする処理（画面端で止める）
+    # 画面の幅 (160) と主人公のドットサイズ (例: 8x8) を考慮します。
+    self.player_x = pyxel.clamp(self.player_x, 0, pyxel.width - 8)
+    self.player_y = pyxel.clamp(self.player_y, 0, pyxel.height - 8)
 
   def draw(self):
-    # 画面をクリア（0は黒、1は紺、7は白...16色から選ぶ）
-    pyxel.cls(1)
+    # 画面をクリア（黒色で塗りつぶす）
+    pyxel.cls(0)
 
-    # 文字を表示（x座標, y座標, 文字, 色）
-    pyxel.text(10, 10, f"ROOM: {self.current_room}", 7)
-    pyxel.text(10, 25, f"ITEM: {'KEY' if self.has_item else 'NONE'}", 7)
+    # 3. 主人公のドット絵を描画する
+    # (描画するx, 描画するy, 画像番号, 画像内のx, 画像内のy, 幅, 高さ)
+    # ※「Image 0」の「(0, 0)」から「8x8ピクセル」を切り出す例
+    pyxel.blt(self.player_x, self.player_y, 0, 0, 0, 8, 8)
 
-    # 部屋のオブジェクトに見立てた四角形を描く（タップ用）
-    pyxel.rect(60, 50, 40, 30, 9)  # 9はオレンジ色
+    # (オプション) 現在の座標を画面に表示する
+    pyxel.text(5, 5, f"X:{self.player_x} Y:{self.player_y}", 7)
 
+# ゲームの実行
 Game()
