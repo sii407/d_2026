@@ -1,37 +1,84 @@
 import pyxel
 
+# 演習用のキャラクタークラス
+class Character:
+  def __init__(self, x, y, name):
+    self.x = x
+    self.y = y
+    self.name = name
+    self.problem_resolved = False
+
+  def reset_problem(self):
+    self.problem_resolved = False
+
+# ゲームのメインクラス
 class Game:
   def __init__(self):
-    # 画面サイズ
-    pyxel.init(160, 120, title="本物のキャラが動くぞ！")
+    pyxel.init(160, 120, caption="Problem Solving Game")
+    pyxel.load("assets.pyxres")  # アセットファイルの読み込み
+    self.player_x = 80
+    self.player_y = 60
 
-    # ★さっきコピーした公式のドット絵ファイルを読み込む！
-    pyxel.load("my_resource.pyxres")
+    # キャラクターのリスト
+    self.characters = [
+        Character(30, 30, "Alice"),
+        Character(130, 30, "Bob"),
+        Character(30, 90, "Charlie"),
+        Character(130, 90, "Daisy"),
+    ]
 
-    # 主人公の初期位置と速度
-    self.player_x = 76
-    self.player_y = 56
-    self.player_speed = 2
+    self.current_dialogue = ""
+    self.wallpaper_acquired = False
 
     pyxel.run(self.update, self.draw)
 
   def update(self):
-    # 矢印キーでの移動
-    if pyxel.btn(pyxel.KEY_LEFT): self.player_x -= self.player_speed
-    if pyxel.btn(pyxel.KEY_RIGHT): self.player_x += self.player_speed
-    if pyxel.btn(pyxel.KEY_UP): self.player_y -= self.player_speed
-    if pyxel.btn(pyxel.KEY_DOWN): self.player_y += self.player_speed
+    if pyxel.btn(pyxel.KEY_LEFT):
+      self.player_x -= 1
+    if pyxel.btn(pyxel.KEY_RIGHT):
+      self.player_x += 1
+    if pyxel.btn(pyxel.KEY_UP):
+      self.player_y -= 1
+    if pyxel.btn(pyxel.KEY_DOWN):
+      self.player_y += 1
 
-    self.player_x = pyxel.clamp(self.player_x, 0, pyxel.width - 8)
-    self.player_y = pyxel.clamp(self.player_y, 0, pyxel.height - 8)
+    # タップでのアクション
+    if pyxel.btnp(pyxel.KEY_SPACE):
+      self.check_interaction()
+
+  def check_interaction(self):
+    for character in self.characters:
+      if (self.player_x in range(character.x - 10, character.x + 10) and
+              self.player_y in range(character.y - 10, character.y + 10)):
+        if not character.problem_resolved:
+          self.current_dialogue = f"{character.name}: \"Please help me find my lost item!\""
+          # 問題を解決するロジックをここに追加する
+          # 例えば、条件を満たすと:
+          character.problem_resolved = True
+          self.current_dialogue = f"{character.name}の問題を解決しました！"
+          break
+        else:
+          self.current_dialogue = f"{character.name}: \"Thank you for your help!\""
+          break
 
   def draw(self):
-    # 画面をクリア（3番＝綺麗な黄緑色。草原っぽくなります！）
-    pyxel.cls(3)
+    pyxel.cls(0)
 
-    # ★ここが重要！四角(rect)をやめて、ドット絵を描画(blt)します。
-    # 公式素材の「Image 0」の「座標(0, 0)」にある「横8px、縦8px」のキャラ（可愛い白いキャラ）を呼び出す設定です。
-    # 最後の「0」は、キャラの背景の黒色を透明にする魔法の数字です。
-    pyxel.blt(self.player_x, self.player_y, 0, 0, 0, 8, 8, 0)
+    # プレイヤーを描画
+    pyxel.rect(self.player_x, self.player_y, 5, 5, 6)
 
-Game()
+    # キャラクターを描画
+    for character in self.characters:
+      pyxel.rect(character.x, character.y, 5, 5, 7)
+
+    # ダイアログを描画
+    pyxel.text(5, 5, self.current_dialogue, 8)
+
+    # 壁紙取得のメッセージ
+    if all(char.problem_resolved for char in self.characters) and not self.wallpaper_acquired:
+      self.wallpaper_acquired = True
+      pyxel.text(5, 15, "All problems solved! Wallpaper unlocked!", 10)
+
+
+if __name__ == "__main__":
+  Game()
