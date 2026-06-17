@@ -98,3 +98,12 @@ body::before {
     color: #ff4d00 !important;
     font-size: 0.9em;
 }
+
+#celebration-message {
+    display: none; 
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #ff4d00;
+    margin: 10px 0;
+    text-align: center;
+}
