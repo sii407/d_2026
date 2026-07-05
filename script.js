@@ -2,7 +2,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const targetMonth = 5;
     const targetDate = 5;
 
-    // 💡 日本時間（Asia/Tokyo）の「月」と「日」を確実に取得する
+    //日本時間を取得
     const now = new Date();
     const japanTimeStr = now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
     const today = new Date(japanTimeStr);
