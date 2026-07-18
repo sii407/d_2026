@@ -4,24 +4,33 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" type="text/css" href="./styles.css" /> 
+    <link rel="stylesheet" type="text/css" href="styles.css" /> 
     <title>d_2026_quiz</title>
 </head>
 <body>
     <main id="main">
         <p id="celebration-message">おめでと!!!</p>        
-        <br>
         <p>Markdownで書きました!!たくさん見てください!!!</p>
         <p class="attention">クイズをプレイしてからクリックしてね(ネタバレ防止)</p> 
-        <div class="button-2026">
-            <p>2026年</p>
-            <a href="d_2026_quiz_06.pdf" class="button" target="_blank" rel="noopener">6月</a>
-            <a href="d_2026_quiz_07.pdf" class="button" target="_blank" rel="noopener">7月</a>
-        </div>
-        <script src="/script.js"></script>
+        
+        <div class="search-group">
+            <select id="select-year">
+                <option value="2026">2026年</option>
+            </select>
 
+            <select id="select-month">
+                <option value="">月を選択</option>
+                <option value="06">6月</option>
+                <option value="07">7月</option>
+                <option value="08">8月</option>
+            </select>
+
+            <button type="button" id="btn-search">参照</button>
+        </div>
+
+        <div id="result-container"></div>
     </main>
-    <footer role="contentinfo">
-    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
